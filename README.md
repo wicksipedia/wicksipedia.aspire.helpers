@@ -22,6 +22,18 @@ dotnet build
 Each helper lives under `src/<PackageId>/` with its own README. Requires the .NET 10 SDK (matching
 Aspire 13.4.x).
 
+## Publishing
+
+Every helper is a packable NuGet project. To publish one to [nuget.org](https://www.nuget.org):
+
+```bash
+dotnet pack -c Release
+dotnet nuget push src/<PackageId>/bin/Release/*.nupkg -k <api-key> -s https://api.nuget.org/v3/index.json
+```
+
+A package's `major.minor` tracks the Aspire version it targets (e.g. `13.4.x` → Aspire 13.4.x); the patch
+is the package's own revision.
+
 ## License
 
 [MIT](LICENSE) © Matt Wicks

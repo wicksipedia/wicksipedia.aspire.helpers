@@ -93,6 +93,13 @@ sql.WithGrantScriptNetwork(scriptSubnet, scriptStorage)  // call AFTER AddPrivat
   (`CREATE USER … WITH SID …, TYPE = E`) and adds it to each requested role (`ALTER ROLE … ADD MEMBER`).
   Idempotent, with a retry loop, so redeploys are safe.
 
+## Versioning
+
+The package version's **`major.minor` tracks the Aspire version it targets** — `13.4.x` targets Aspire
+`13.4.x` — and the **patch** is this package's own revision (fixes/tweaks against that Aspire line). So
+`13.4.0` is the first release for Aspire 13.4; `13.4.1` would be a later fix still on 13.4; a bump to
+Aspire 13.5 ships as `13.5.0`. Pick the package `major.minor` that matches your Aspire packages.
+
 ## Requirements
 
 - .NET Aspire **13.4.x** (net10.0).
