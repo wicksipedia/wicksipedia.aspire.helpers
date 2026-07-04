@@ -1,0 +1,17 @@
+# .NET build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+*.user
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# IDE / OS
+.vs/
+.idea/
+.vscode/
+*.DS_Store

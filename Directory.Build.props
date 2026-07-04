@@ -1,0 +1,24 @@
+<Project>
+
+  <!-- Shared metadata for every helper package in the monorepo. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+
+    <Authors>Matt Wicks</Authors>
+    <Company>Wicksipedia</Company>
+    <Product>Wicksipedia.Aspire.Helpers</Product>
+    <Copyright>Copyright © Matt Wicks</Copyright>
+    <PackageProjectUrl>https://github.com/wicksipedia/Wicksipedia.Aspire.Helpers</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wicksipedia/Wicksipedia.Aspire.Helpers</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Wicksipedia.Aspire.Helpers.SqlRoles/Wicksipedia.Aspire.Helpers.SqlRoles.csproj" />
+  </Folder>
+</Solution>
