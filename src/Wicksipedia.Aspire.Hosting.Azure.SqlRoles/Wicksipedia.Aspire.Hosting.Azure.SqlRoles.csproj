@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>Wicksipedia.Aspire.Helpers.SqlRoles</PackageId>
+    <PackageId>Wicksipedia.Aspire.Hosting.Azure.SqlRoles</PackageId>
     <!-- Version is computed in CI: <Aspire version>.<build number>. See .github/workflows/publish.yml. -->
     <Version>13.4.6.0</Version>
     <Description>

@@ -1,4 +1,4 @@
-# Wicksipedia.Aspire.Helpers.SqlRoles
+# Wicksipedia.Aspire.Hosting.Azure.SqlRoles
 
 Grant Azure SQL user-assigned managed identities **specific, least-privilege database roles** from your
 .NET Aspire AppHost — instead of Aspire's built-in behaviour of granting **`db_owner` to every
@@ -23,7 +23,7 @@ database — that create the identity's user and add it to **exactly the roles y
 ## Install
 
 ```bash
-dotnet add package Wicksipedia.Aspire.Helpers.SqlRoles
+dotnet add package Wicksipedia.Aspire.Hosting.Azure.SqlRoles
 ```
 
 ## Use

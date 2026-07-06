@@ -9,7 +9,7 @@ contributed back upstream).
 
 | Package | What it does |
 |---|---|
-| [`Wicksipedia.Aspire.Helpers.SqlRoles`](src/Wicksipedia.Aspire.Helpers.SqlRoles/) | Grant Azure SQL managed identities **least-privilege** database roles (e.g. `db_datareader`) instead of Aspire's hardcoded `db_owner`-for-every-identity — including the private-endpoint grant-script plumbing. |
+| [`Wicksipedia.Aspire.Hosting.Azure.SqlRoles`](src/Wicksipedia.Aspire.Hosting.Azure.SqlRoles/) | Grant Azure SQL managed identities **least-privilege** database roles (e.g. `db_datareader`) instead of Aspire's hardcoded `db_owner`-for-every-identity — including the private-endpoint grant-script plumbing. |
 
 More will land here over time.
 
