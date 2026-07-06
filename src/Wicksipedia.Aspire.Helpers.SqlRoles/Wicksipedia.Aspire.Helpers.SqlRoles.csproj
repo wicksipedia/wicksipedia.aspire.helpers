@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <PackageId>Wicksipedia.Aspire.Helpers.SqlRoles</PackageId>
-    <!-- major.minor tracks the targeted Aspire version (13.4); the patch is this package's own. -->
-    <Version>13.4.0</Version>
+    <!-- Version is computed in CI: <Aspire version>.<build number>. See .github/workflows/publish.yml. -->
+    <Version>13.4.6.0</Version>
     <Description>
       Grant Azure SQL managed identities least-privilege database roles (db_datareader, db_datawriter, …)
       from a .NET Aspire AppHost, instead of Aspire's built-in db_owner-for-every-identity — including the

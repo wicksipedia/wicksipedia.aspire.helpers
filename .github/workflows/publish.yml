@@ -1,30 +1,45 @@
 name: Publish
 
-# Bump <Version> in the package(s) you want to release, commit, then push a tag: v13.4.6
-# Packs the whole solution and pushes every .nupkg; --skip-duplicate means only
-# newly-bumped versions actually publish, so no per-package tag wiring is needed.
+# Manually kicked off. Version = <Aspire version>.<build number>, e.g. 13.4.6.42,
+# where the Aspire version is read from Directory.Packages.props and the build
+# number is this workflow's run number. On success it publishes every packable
+# project to NuGet, then creates a GitHub release tag v<version>.
 on:
-  push:
-    tags: ["v*"]
   workflow_dispatch:
 
 permissions:
-  contents: read
-  id-token: write # required for OIDC token issuance
+  contents: write # create the release tag
+  id-token: write # OIDC → NuGet temp key
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: release # gate: set required reviewers on this env (and pin it on the NuGet policy)
+    environment: release # required reviewer must approve before this runs
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
-      - run: dotnet pack Wicksipedia.Aspire.Helpers.slnx -c Release -o ./artifacts
+
+      - name: Compute version
+        id: ver
+        # ponytail: base tracks Aspire.Hosting.Azure.Sql. When packages diverge on
+        # Aspire version, compute per-project instead of one base for the solution.
+        run: |
+          base=$(grep -oPm1 '(?<=Include="Aspire.Hosting.Azure.Sql" Version=")[^"]+' Directory.Packages.props)
+          echo "version=$base.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - run: dotnet pack Wicksipedia.Aspire.Helpers.slnx -c Release -o ./artifacts -p:Version=${{ steps.ver.outputs.version }}
+
       - name: NuGet login (OIDC → temp API key)
         uses: NuGet/login@v1
         id: login
         with:
           user: ${{ secrets.NUGET_USER }}
+
       - run: dotnet nuget push "./artifacts/*.nupkg" --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: Tag release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "v${{ steps.ver.outputs.version }}" --generate-notes --title "v${{ steps.ver.outputs.version }}"
