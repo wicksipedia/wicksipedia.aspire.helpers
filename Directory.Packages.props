@@ -1,0 +1,14 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Aspire.Hosting.Azure.Sql" Version="13.4.6" />
+    <PackageVersion Include="Aspire.Hosting.Azure.Network" Version="13.4.6" />
+    <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="13.4.6" />
+  </ItemGroup>
+
+</Project>

@@ -19,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.Azure.Sql" Version="13.4.2" />
-    <PackageReference Include="Aspire.Hosting.Azure.Network" Version="13.4.2" />
-    <PackageReference Include="Aspire.Hosting.Azure.Storage" Version="13.4.2" />
+    <PackageReference Include="Aspire.Hosting.Azure.Sql" />
+    <PackageReference Include="Aspire.Hosting.Azure.Network" />
+    <PackageReference Include="Aspire.Hosting.Azure.Storage" />
   </ItemGroup>
 
 </Project>

@@ -15,3 +15,5 @@ artifacts/
 .idea/
 .vscode/
 *.DS_Store
+
+.claude/
