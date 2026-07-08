@@ -1,4 +1,4 @@
-# Wicksipedia.Aspire.Hosting.Azure.SqlRoles
+# Hosting.Azure.SqlRoles
 
 Grant Azure SQL user-assigned managed identities **specific, least-privilege database roles** from your
 .NET Aspire AppHost — instead of Aspire's built-in behaviour of granting **`db_owner` to every
@@ -19,6 +19,16 @@ read/write, the migrator needs owner". So a least-privilege setup isn't possible
 
 This helper disables that built-in grant and emits its **own** deployment scripts — one per identity, per
 database — that create the identity's user and add it to **exactly the roles you ask for**, idempotently.
+
+> [!TIP]
+> SSW's rule [Do you use Managed Identities in your Azure projects?](https://www.ssw.com.au/rules/use-managed-identity-in-azure)
+> makes the case for managed identities on the principle that *"each identity gets only the permissions it
+> needs"* — assigning granular Azure RBAC roles (`Storage Blob Data Reader`, `Key Vault Secrets User`)
+> rather than a shared, over-scoped secret. That reasoning stops at the Azure IAM boundary: **inside** the
+> database, Aspire hands every identity `db_owner`, so an app that only reads gets full ownership — exactly
+> the over-privilege the rule warns against, one layer down. This package carries least-privilege past the
+> IAM boundary into the database itself: the same identity that has a narrow Azure role now gets an
+> equally narrow **database** role (`db_datareader`, not `db_owner`).
 
 ## Install
 
