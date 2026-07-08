@@ -1,5 +1,5 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/Wicksipedia.Aspire.Hosting.Azure.SqlRoles/Wicksipedia.Aspire.Hosting.Azure.SqlRoles.csproj" />
+    <Project Path="src/Hosting.Azure.SqlRoles/Hosting.Azure.SqlRoles.csproj" />
   </Folder>
 </Solution>
