@@ -1,25 +1,25 @@
 # Wicksipedia.Aspire.Helpers
 
-A small monorepo of [.NET Aspire](https://learn.microsoft.com/dotnet/aspire) hosting helpers that fill
+A small monorepo of [Aspire](https://aspire.dev) hosting helpers that fill
 gaps in the stock Azure integrations. Each helper is an independent, self-contained NuGet package that
 depends only on **public** Aspire + `Azure.Provisioning` APIs — so it lifts out cleanly (and could be
 contributed back upstream).
 
-## Why .NET Aspire?
+## Why Aspire?
 
-[Aspire](https://www.ssw.com.au/rules/aspire/) is how we build cloud-native .NET now. One AppHost
+[Aspire](https://aspire.dev) is how we build cloud-native .NET now. One AppHost
 model describes the whole system — the app, its dependencies (SQL, Redis, Service Bus…), and how they wire
 together — and Aspire turns that into a local run (service discovery, containers, injected connection
 strings, health checks; no Docker Compose, no YAML) **and** the Azure Bicep to deploy it. The
 infrastructure stops being a separate, hand-maintained artifact and becomes C# that lives next to the app.
 
-At [SSW](https://www.ssw.com.au/consulting/clean-architecture) that shift has been a real accelerant. Across
-1,000+ enterprise engagements the slow part was rarely the app — it was standing up and re-standing-up the
-surrounding infrastructure for each client. Aspire collapses that: the same model gives every project a
-consistent local F5 experience and a repeatable path to Azure, so teams spend their time on the domain, not
-on plumbing. It's baked into the
-[SSW.CleanArchitecture](https://github.com/SSWConsulting/SSW.CleanArchitecture) template, which is where
-most new projects start.
+At [SSW](https://www.ssw.com.au) that shift has been a real accelerant. Across 1,000+ enterprise engagements
+the slow part was rarely the app — it was standing up and re-standing-up the surrounding infrastructure for
+each client. Aspire collapses that: the same model gives every project a consistent local F5 experience and
+a repeatable path to Azure, so teams spend their time on the domain, not on plumbing. It's our
+[recommended default for cloud-native .NET](https://www.ssw.com.au/rules/aspire/), baked into the
+[SSW.CleanArchitecture](https://github.com/SSWConsulting/SSW.CleanArchitecture) template that most new
+projects start from.
 
 Which is exactly why the last mile matters. Aspire's convenience is only worth having if what it provisions
 is production-safe — and out of the box a few defaults aren't (every database identity gets `db_owner`;

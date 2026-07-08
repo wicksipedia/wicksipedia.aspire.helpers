@@ -1,7 +1,7 @@
 # Hosting.Azure.SqlRoles
 
 Grant Azure SQL user-assigned managed identities **specific, least-privilege database roles** from your
-.NET Aspire AppHost — instead of Aspire's built-in behaviour of granting **`db_owner` to every
+Aspire AppHost — instead of Aspire's built-in behaviour of granting **`db_owner` to every
 referencing identity**.
 
 ## Why
@@ -112,7 +112,7 @@ Aspire 13.5 ships as `13.5.0`. Pick the package `major.minor` that matches your 
 
 ## Requirements
 
-- .NET Aspire **13.4.x** (net10.0).
+- Aspire **13.4.x** (net10.0).
 - The private-endpoint path uses Aspire's still-**evaluation-only** VNet/private-endpoint APIs, so the
   package suppresses `ASPIREAZURE003`. Re-verify on Aspire upgrades — the ported plumbing tracks Aspire
   internals.

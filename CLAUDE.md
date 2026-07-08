@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A monorepo of independent **.NET Aspire hosting helper** NuGet packages that fill gaps in the stock
+A monorepo of independent **Aspire hosting helper** NuGet packages that fill gaps in the stock
 Azure integrations. Each helper lives under `src/<short-name>/` (the `PackageId` with the shared
 `Wicksipedia.Aspire.` prefix stripped — e.g. `Wicksipedia.Aspire.Hosting.Azure.SqlRoles` →
 `src/Hosting.Azure.SqlRoles/`), ships as its own package, and has its own README **and its own

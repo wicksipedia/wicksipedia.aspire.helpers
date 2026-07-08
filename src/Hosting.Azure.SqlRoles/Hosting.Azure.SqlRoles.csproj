@@ -6,7 +6,7 @@
     <Version>13.4.6.0</Version>
     <Description>
       Grant Azure SQL managed identities least-privilege database roles (db_datareader, db_datawriter, …)
-      from a .NET Aspire AppHost, instead of Aspire's built-in db_owner-for-every-identity — including the
+      from an Aspire AppHost, instead of Aspire's built-in db_owner-for-every-identity — including the
       in-VNet grant-script plumbing needed when the SQL server is behind a private endpoint.
     </Description>
     <PackageTags>aspire;dotnet-aspire;azure;azure-sql;managed-identity;least-privilege;private-endpoint</PackageTags>
