@@ -19,10 +19,14 @@ file: `AzureSqlDatabaseRoleExtensions.cs`.
   `AddDatabase` calls — so the order of user calls doesn't matter, except the private-endpoint rule below.
 - **First-grant side effect.** The first `WithSqlDatabaseRoles` on a server calls
   `ClearDefaultRoleAssignments()` (kills Aspire's `db_owner` script) and registers the roles module.
-- **Grant script** (`BuildScript`): PowerShell/`Invoke-Sqlcmd`, one per identity per database, run on ACI
-  as the SQL server's **Entra admin** identity (which `AddAzureSqlServer` provisions). Idempotent
-  (`IF IS_ROLEMEMBER … = 0`) with a retry loop. The `SqlServer` module version is pinned deliberately
-  (aspire#9926) — **don't unpin**.
+- **Grant script** (`BuildScript`): PowerShell talking to `Microsoft.Data.SqlClient` directly, one per
+  identity per database, run on ACI as the SQL server's **Entra admin** identity (which
+  `AddAzureSqlServer` provisions). Idempotent (`IF IS_ROLEMEMBER … = 0`) with a retry loop.
+  **Never call `Invoke-Sqlcmd` here.** It registers Always Encrypted key-store providers on every call,
+  which throws `MissingMethodException` whenever the deployment-script image ships a different
+  `Microsoft.Extensions` assembly set. The `SqlServer` module is still installed, for its
+  `Microsoft.Data.SqlClient.dll` only, and its version is pinned deliberately (aspire#9926) —
+  **don't unpin**.
 - **Private-endpoint path** (`WithGrantScriptNetwork` → `ConfigurePrivateEndpointPlumbing`): when SQL is
   behind a private endpoint the ACI must run in-VNet. Wires a storage **file** private endpoint, an NSG
   (outbound 443 → Entra ID + SQL), ACI subnet delegation, and the admin identity's file-share role.

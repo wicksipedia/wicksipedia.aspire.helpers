@@ -301,9 +301,16 @@ public static class AzureSqlDatabaseRoleExtensions
             $principalName = "$env:PRINCIPALNAME"
             $id = "$env:ID"
 
-            # Pinned version avoids breaking changes in 22.4.5.1 (aspire#9926).
+            # The SqlServer module is installed only for the Microsoft.Data.SqlClient assembly it
+            # carries. Its cmdlets are never called: Invoke-Sqlcmd registers Always Encrypted
+            # key-store providers on every call, and that registration throws MissingMethodException
+            # whenever the deployment-script image ships a different Microsoft.Extensions assembly
+            # set. Talking to SqlClient directly keeps that code path out of the picture.
+            # The version pin also avoids breaking changes in 22.4.5.1 (aspire#9926).
             Install-Module -Name SqlServer -RequiredVersion 22.3.0 -Force -AllowClobber -Scope CurrentUser
-            Import-Module SqlServer
+            $sqlClientDll = Get-ChildItem -Path (Get-Module -ListAvailable SqlServer | Select-Object -First 1).ModuleBase -Filter Microsoft.Data.SqlClient.dll -Recurse | Select-Object -First 1
+            if (-not $sqlClientDll) { throw "Microsoft.Data.SqlClient.dll not found in the SqlServer module." }
+            Add-Type -Path $sqlClientDll.FullName
 
             $sqlCmd = @"
             DECLARE @name SYSNAME = '$principalName';
@@ -317,7 +324,9 @@ public static class AzureSqlDatabaseRoleExtensions
 
             Write-Host $sqlCmd
 
-            $connectionString = "Server=tcp:${sqlServerFqdn},1433;Initial Catalog=${sqlDatabaseName};Authentication=Active Directory Default;"
+            $connectionString = "Server=tcp:${sqlServerFqdn},1433;Initial Catalog=${sqlDatabaseName};Encrypt=True;"
+            # -AsPlainText is required from Az 12 onward, where the token is a SecureString by default.
+            $accessToken = Get-AzAccessToken -ResourceUrl "https://database.windows.net/" -AsPlainText
 
             $maxRetries = 5
             $retryDelay = 60
@@ -327,8 +336,15 @@ public static class AzureSqlDatabaseRoleExtensions
             while (-not $success -and $attempt -lt $maxRetries) {
                 $attempt++
                 Write-Host "Attempt $attempt of $maxRetries..."
+                $connection = $null
                 try {
-                    Invoke-Sqlcmd -ConnectionString $connectionString -Query $sqlCmd
+                    $connection = [Microsoft.Data.SqlClient.SqlConnection]::new($connectionString)
+                    $connection.AccessToken = $accessToken
+                    $connection.Open()
+                    $command = $connection.CreateCommand()
+                    $command.CommandText = $sqlCmd
+                    $command.CommandTimeout = 120
+                    [void]$command.ExecuteNonQuery()
                     $success = $true
                     Write-Host "SQL command succeeded on attempt $attempt."
                 } catch {
@@ -339,6 +355,8 @@ public static class AzureSqlDatabaseRoleExtensions
                     } else {
                         throw
                     }
+                } finally {
+                    if ($connection) { $connection.Dispose() }
                 }
             }
             """;
