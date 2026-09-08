@@ -301,16 +301,17 @@ public static class AzureSqlDatabaseRoleExtensions
             $principalName = "$env:PRINCIPALNAME"
             $id = "$env:ID"
 
-            # The SqlServer module is installed only for the Microsoft.Data.SqlClient assembly it
-            # carries. Its cmdlets are never called: Invoke-Sqlcmd registers Always Encrypted
-            # key-store providers on every call, and that registration throws MissingMethodException
-            # whenever the deployment-script image ships a different Microsoft.Extensions assembly
-            # set. Talking to SqlClient directly keeps that code path out of the picture.
+            # The SqlServer module is imported for the Microsoft.Data.SqlClient assembly it carries,
+            # but its cmdlets are never called. Invoke-Sqlcmd registers Always Encrypted key-store
+            # providers on every call, and that registration throws MissingMethodException whenever
+            # the deployment-script image ships a different Microsoft.Extensions assembly set.
+            # Import-Module is safe: the faulty registration runs per cmdlet call, not at import.
+            # Import-Module is also required. Add-Type on the module's root dll loads the Windows
+            # build, whose static constructor reaches SqlPerformanceCounters and throws
+            # PlatformNotSupportedException on Linux.
             # The version pin also avoids breaking changes in 22.4.5.1 (aspire#9926).
             Install-Module -Name SqlServer -RequiredVersion 22.3.0 -Force -AllowClobber -Scope CurrentUser
-            $sqlClientDll = Get-ChildItem -Path (Get-Module -ListAvailable SqlServer | Select-Object -First 1).ModuleBase -Filter Microsoft.Data.SqlClient.dll -Recurse | Select-Object -First 1
-            if (-not $sqlClientDll) { throw "Microsoft.Data.SqlClient.dll not found in the SqlServer module." }
-            Add-Type -Path $sqlClientDll.FullName
+            Import-Module SqlServer
 
             $sqlCmd = @"
             DECLARE @name SYSNAME = '$principalName';
