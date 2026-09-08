@@ -325,8 +325,12 @@ public static class AzureSqlDatabaseRoleExtensions
             Write-Host $sqlCmd
 
             $connectionString = "Server=tcp:${sqlServerFqdn},1433;Initial Catalog=${sqlDatabaseName};Encrypt=True;"
-            # -AsPlainText is required from Az 12 onward, where the token is a SecureString by default.
-            $accessToken = Get-AzAccessToken -ResourceUrl "https://database.windows.net/" -AsPlainText
+            # Get-AzAccessToken returns a SecureString in current Az versions and a plain String in
+            # older ones. There is no -AsPlainText switch on this cmdlet, so unwrap by type.
+            $accessToken = (Get-AzAccessToken -ResourceUrl "https://database.windows.net/").Token
+            if ($accessToken -is [System.Security.SecureString]) {
+                $accessToken = [System.Net.NetworkCredential]::new("", $accessToken).Password
+            }
 
             $maxRetries = 5
             $retryDelay = 60
