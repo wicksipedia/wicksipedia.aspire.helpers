@@ -2,4 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/Hosting.Azure.SqlRoles/Hosting.Azure.SqlRoles.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Hosting.Azure.SqlRoles.Tests/Hosting.Azure.SqlRoles.Tests.csproj" />
+  </Folder>
 </Solution>

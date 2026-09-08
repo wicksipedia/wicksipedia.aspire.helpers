@@ -1,0 +1,17 @@
+name: CI
+
+# The grant-script test starts a container, so this needs a Linux runner with Docker.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+      - run: dotnet test --solution Wicksipedia.Aspire.Helpers.slnx -c Release

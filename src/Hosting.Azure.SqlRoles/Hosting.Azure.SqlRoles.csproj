@@ -24,4 +24,8 @@
     <PackageReference Include="Aspire.Hosting.Azure.Storage" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hosting.Azure.SqlRoles.Tests" />
+  </ItemGroup>
+
 </Project>

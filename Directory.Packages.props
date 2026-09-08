@@ -11,4 +11,8 @@
     <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="13.4.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageVersion Include="xunit.v3" Version="4.0.0" />
+  </ItemGroup>
+
 </Project>

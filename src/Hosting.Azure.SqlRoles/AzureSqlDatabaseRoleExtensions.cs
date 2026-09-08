@@ -236,7 +236,7 @@ public static class AzureSqlDatabaseRoleExtensions
                         BicepFunction.Interpolate($"grant-{BicepFunction.GetUniqueString(id.GetBicepIdentifier(), new StringLiteralExpression(dbResourceName), BicepFunction.GetResourceGroup().Id)}"),
                         24),
                     RetentionInterval = TimeSpan.FromHours(1),
-                    AzPowerShellVersion = "14.0",
+                    AzPowerShellVersion = AzPowerShellVersion,
                 };
                 resource.Identity.IdentityType = ArmDeploymentScriptManagedIdentityType.UserAssigned;
                 resource.Identity.UserAssignedIdentities[adminId] = new UserAssignedIdentityDetails();
@@ -260,6 +260,9 @@ public static class AzureSqlDatabaseRoleExtensions
             }
         }
     }
+
+    /// <summary>Az PowerShell image the grant script runs on. The tests run against the same tag.</summary>
+    internal const string AzPowerShellVersion = "14.0";
 
     private static string RoleName(SqlDatabaseRole role) => role switch
     {
@@ -289,7 +292,7 @@ public static class AzureSqlDatabaseRoleExtensions
 
     // PowerShell (runs on ACI as the SQL admin) that creates the identity's user and adds it to the
     // requested roles — idempotent, so re-deploys are safe. Adapted from Aspire's own admin script.
-    private static string BuildScript(SqlDatabaseRole[] roles)
+    internal static string BuildScript(SqlDatabaseRole[] roles)
     {
         var roleLines = string.Join(
             "\n            ",

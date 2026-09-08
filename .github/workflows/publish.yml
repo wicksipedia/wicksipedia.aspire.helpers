@@ -21,6 +21,10 @@ jobs:
         with:
           global-json-file: global.json
 
+      # Gate the release on the grant-script container test. Three broken versions shipped before
+      # this ran here.
+      - run: dotnet test --solution Wicksipedia.Aspire.Helpers.slnx -c Release
+
       - name: Compute version
         id: ver
         # ponytail: base tracks Aspire.Hosting.Azure.Sql. When packages diverge on
