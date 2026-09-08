@@ -206,18 +206,14 @@ public static class AzureSqlDatabaseRoleExtensions
 
         // If a network was supplied AND a private endpoint exists (DependsOnPes populated by
         // WithGrantScriptNetwork), run every script in the VNet subnet against the storage file share.
-        var isPrivate = state.Subnet is not null && state.Storage is not null && state.DependsOnPes.Count > 0;
-        ProvisioningParameter? subnetIdParam = null;
-        BicepValue<string>? storageAccountName = null;
-        var dependsOn = new List<ProvisionableResource>();
-        if (isPrivate)
+        // The three values are set together or not at all, so they travel as one nullable value.
+        (ProvisioningParameter SubnetId, BicepValue<string> StorageAccountName, List<ProvisionableResource> DependsOn)? privateNetwork = null;
+        if (state.Subnet is { } subnet && state.Storage is { } storage && state.DependsOnPes.Count > 0)
         {
-            subnetIdParam = state.Subnet!.Resource.Id.AsProvisioningParameter(infra, "grantScriptSubnetId");
-            storageAccountName = ((StorageAccount)state.Storage!.Resource.AddAsExistingResource(infra)).Name;
-            foreach (var pe in state.DependsOnPes)
-            {
-                dependsOn.Add(pe.AddAsExistingResource(infra));
-            }
+            privateNetwork = (
+                subnet.Resource.Id.AsProvisioningParameter(infra, "grantScriptSubnetId"),
+                ((StorageAccount)storage.Resource.AddAsExistingResource(infra)).Name,
+                [.. state.DependsOnPes.Select(pe => pe.AddAsExistingResource(infra))]);
         }
 
         foreach (var (identityBuilder, roles) in state.Grants)
@@ -246,11 +242,11 @@ public static class AzureSqlDatabaseRoleExtensions
                 resource.EnvironmentVariables.Add(new ScriptEnvironmentVariable { Name = "ID", Value = clientId });
                 resource.ScriptContent = script;
 
-                if (isPrivate)
+                if (privateNetwork is { } network)
                 {
-                    resource.ContainerSettings.SubnetIds.Add(new ScriptContainerGroupSubnet { Id = subnetIdParam });
-                    resource.StorageAccountSettings.StorageAccountName = storageAccountName;
-                    foreach (var d in dependsOn)
+                    resource.ContainerSettings.SubnetIds.Add(new ScriptContainerGroupSubnet { Id = network.SubnetId });
+                    resource.StorageAccountSettings.StorageAccountName = network.StorageAccountName;
+                    foreach (var d in network.DependsOn)
                     {
                         resource.DependsOn.Add(d);
                     }
